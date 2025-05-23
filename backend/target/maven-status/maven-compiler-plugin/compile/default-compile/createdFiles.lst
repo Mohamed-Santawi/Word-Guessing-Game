@@ -1,0 +1,11 @@
+com\example\wordgame\model\ScoreEntry.class
+com\example\wordgame\WordGameApplication$1.class
+com\example\wordgame\config\WebConfig.class
+com\example\wordgame\controller\ScoreController.class
+com\example\wordgame\controller\WordController.class
+com\example\wordgame\WordGameApplication.class
+com\example\wordgame\init\ScoreInit.class
+com\example\wordgame\model\Word.class
+com\example\wordgame\model\Score.class
+com\example\wordgame\model\WordEntry.class
+com\example\wordgame\init\WordInit.class
