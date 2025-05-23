@@ -35,34 +35,46 @@
 
     <build>
         <plugins>
-  <plugin>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>exec-maven-plugin</artifactId>
-    <version>3.1.0</version>
-    <executions>
-        <execution>
-            <id>init-words</id>
-            <goals>
-                <goal>java</goal>
-            </goals>
-            <configuration>
-                <mainClass>com.example.wordgame.init.WordInit</mainClass>
-            </configuration>
-        </execution>
-        <execution>
-            <id>init-scores</id>
-            <goals>
-                <goal>java</goal>
-            </goals>
-            <configuration>
-                <mainClass>com.example.wordgame.init.ScoreInit</mainClass>
-            </configuration>
-        </execution>
-    </executions>
-    <configuration>
-        <workingDirectory>${project.basedir}</workingDirectory>
-    </configuration>
-</plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>init-words</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.example.wordgame.init.WordInit</mainClass>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>init-scores</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.example.wordgame.init.ScoreInit</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <workingDirectory>${project.basedir}</workingDirectory>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
