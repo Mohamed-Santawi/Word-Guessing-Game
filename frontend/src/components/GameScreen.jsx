@@ -133,33 +133,58 @@ function GameScreen({ nickname, setError }) {
     .join(" ");
 
   return (
-    <div className="container">
+    <div className="container fade-in">
       <div className="row justify-content-center">
         <div className="col-12 col-md-8 col-lg-6">
-          <h1 className="text-center mb-4">Game Screen</h1>
           <div className="card shadow-sm">
             <div className="card-body">
-              <p className="lead">Nickname: {nickname}</p>
-              <div className="mb-4">
-                <h2 className="text-center display-4 mb-3">{displayWord}</h2>
+              <h1 className="text-center mb-4">Word Guessing Game</h1>
+              <div className="player-info mb-4">
+                <p className="lead text-center">
+                  Player: <span className="fw-bold">{nickname}</span>
+                </p>
               </div>
-              <div className="d-flex justify-content-between mb-3">
-                <p className="mb-0">Incorrect Guesses: {incorrectGuesses}/6</p>
-                <p className="mb-0">Time: {timeTaken} seconds</p>
+
+              <div className="game-stats d-flex justify-content-between mb-4">
+                <div className="timer">
+                  <i className="fas fa-clock me-2"></i>
+                  {timeTaken}s
+                </div>
+                <div className="attempts">
+                  <i className="fas fa-heart me-2"></i>
+                  {6 - incorrectGuesses}/6
+                </div>
               </div>
+
+              <div className="word-display mb-4">{displayWord}</div>
+
               {usedHint && (
-                <div className="alert alert-info mb-3">
+                <div className="hint-box mb-4">
+                  <i className="fas fa-lightbulb me-2"></i>
                   <strong>Hint:</strong> {hint}
                 </div>
               )}
-              <div className="mb-3">
+
+              <div className="progress-indicator mb-4">
+                {[...Array(6)].map((_, index) => (
+                  <div
+                    key={index}
+                    className={`progress-dot ${
+                      index < incorrectGuesses ? "active" : ""
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <div className="mb-4">
                 <input
                   type="text"
-                  className="form-control form-control-lg mb-2"
+                  className="form-control form-control-lg mb-3"
                   value={guess}
                   onChange={(e) => setGuess(e.target.value)}
                   disabled={gameOver}
                   placeholder="Enter your guess..."
+                  maxLength={word.length}
                 />
                 <div className="d-grid gap-2 d-md-flex justify-content-md-center">
                   <button
@@ -167,6 +192,7 @@ function GameScreen({ nickname, setError }) {
                     onClick={handleGuess}
                     disabled={gameOver}
                   >
+                    <i className="fas fa-check me-2"></i>
                     Guess
                   </button>
                   <button
@@ -174,12 +200,14 @@ function GameScreen({ nickname, setError }) {
                     onClick={() => setUsedHint(true)}
                     disabled={usedHint || gameOver}
                   >
-                    Show Hint
+                    <i className="fas fa-lightbulb me-2"></i>
+                    Hint
                   </button>
                   <button
                     className="btn btn-danger btn-lg"
                     onClick={() => navigate("/")}
                   >
+                    <i className="fas fa-times me-2"></i>
                     Quit
                   </button>
                 </div>
@@ -188,13 +216,24 @@ function GameScreen({ nickname, setError }) {
           </div>
         </div>
       </div>
+
       {gameOver && (
         <div className="modal show d-block" tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">
-                  {won ? "Congratulations!" : "Game Over"}
+                  {won ? (
+                    <span className="text-success">
+                      <i className="fas fa-trophy me-2"></i>
+                      Congratulations!
+                    </span>
+                  ) : (
+                    <span className="text-danger">
+                      <i className="fas fa-times-circle me-2"></i>
+                      Game Over
+                    </span>
+                  )}
                 </h5>
               </div>
               <div className="modal-body text-center">
@@ -202,13 +241,14 @@ function GameScreen({ nickname, setError }) {
                 <p>
                   The word was: <strong>{word}</strong>
                 </p>
-                <p className="h3">Score: {finalScore}</p>
+                <div className="score-display">Score: {finalScore}</div>
               </div>
               <div className="modal-footer justify-content-center">
                 <button
                   className="btn btn-primary btn-lg"
                   onClick={() => navigate("/")}
                 >
+                  <i className="fas fa-home me-2"></i>
                   Back to Home
                 </button>
               </div>
