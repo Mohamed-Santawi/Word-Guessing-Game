@@ -7,7 +7,7 @@ import LeaderboardScreen from "./components/LeaderboardScreen";
 import WordManagementScreen from "./components/WordManagementScreen";
 import AboutPage from "./components/AboutPage";
 import { API_URL } from "./config";
-fetch(`${API_URL}/api/words/categories`);
+
 /**
  * Main App component with navigation and routing.
  */
@@ -18,7 +18,7 @@ function App() {
 
   // Fetch categories from API on mount
   useEffect(() => {
-    fetch("/api/words/categories")
+    fetch(`${API_URL}/api/words/categories`)
       .then((res) =>
         res.ok ? res.json() : Promise.reject("Server unavailable")
       )
