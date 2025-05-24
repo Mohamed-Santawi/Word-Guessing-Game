@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/scores")
-@CrossOrigin(origins = "http://localhost:5173")
 public class ScoreController {
 
     private static final Logger LOGGER = Logger.getLogger(ScoreController.class.getName());
@@ -72,28 +71,38 @@ public class ScoreController {
 
     @PostMapping
     public ResponseEntity<Score> saveScore(@RequestBody Score score) {
-        if (score == null || score.getPlayerName() == null || score.getScore() < 0) {
-            LOGGER.warning("Invalid score data received");
-            return ResponseEntity.badRequest().build();
+        try {
+            if (score == null || score.getPlayerName() == null || score.getPlayerName().trim().isEmpty() || score.getScore() < 0) {
+                LOGGER.warning("Invalid score data received: " + (score != null ? score.toString() : "null"));
+                return ResponseEntity.badRequest().build();
+            }
+            score.setTimestamp(new Date());
+            scores.add(score);
+            saveScores();
+            LOGGER.info("Saved score for player: " + score.getPlayerName() + ", score: " + score.getScore());
+            return ResponseEntity.status(HttpStatus.CREATED).body(score);
+        } catch (Exception e) {
+            LOGGER.severe("Error saving score: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        score.setTimestamp(new Date());
-        scores.add(score);
-        saveScores();
-        LOGGER.info("Saved score for player: " + score.getPlayerName() + ", score: " + score.getScore());
-        return ResponseEntity.status(HttpStatus.CREATED).body(score);
     }
 
     @GetMapping
     public ResponseEntity<List<Score>> getHighScores() {
-        if (scores.isEmpty()) {
-            LOGGER.warning("No scores available; returning empty list");
-            return ResponseEntity.ok(new ArrayList<>());
+        try {
+            if (scores.isEmpty()) {
+                LOGGER.warning("No scores available; returning empty list");
+                return ResponseEntity.ok(new ArrayList<>());
+            }
+            List<Score> sortedScores = scores.stream()
+                    .sorted(Comparator.comparingInt(Score::getScore).reversed()
+                            .thenComparing(Score::getTimestamp))
+                    .limit(10)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(sortedScores);
+        } catch (Exception e) {
+            LOGGER.severe("Error getting high scores: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        List<Score> sortedScores = scores.stream()
-                .sorted(Comparator.comparingInt(Score::getScore).reversed()
-                        .thenComparing(Score::getTimestamp))
-                .limit(10)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(sortedScores);
     }
 }
