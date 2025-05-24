@@ -1,0 +1,19 @@
+{
+  "name": "Word Game Backend",
+  "description": "Backend for Word Guessing Game",
+  "env": {
+    "JAVA_OPTS": {
+      "description": "Java options",
+      "value": "-Xmx512m"
+    },
+    "SPRING_PROFILES_ACTIVE": {
+      "description": "Spring profile",
+      "value": "prod"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/java"
+    }
+  ]
+}
