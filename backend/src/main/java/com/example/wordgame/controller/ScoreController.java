@@ -20,7 +20,7 @@ public class ScoreController {
     private List<Score> scores;
     private final String filePath;
 
-    public ScoreController(@Value("${file.storage.path}") String storagePath) {
+    public ScoreController(@Value("${file.storage.path:}") String storagePath) {
         this.filePath = storagePath + File.separator + "scores.ser";
     }
 
@@ -70,17 +70,44 @@ public class ScoreController {
     }
 
     @PostMapping
-    public ResponseEntity<Score> saveScore(@RequestBody Score score) {
+    public ResponseEntity<Score> saveScore(@RequestBody Map<String, Object> scoreData) {
         try {
-            if (score == null || score.getPlayerName() == null || score.getPlayerName().trim().isEmpty() || score.getScore() < 0) {
-                LOGGER.warning("Invalid score data received: " + (score != null ? score.toString() : "null"));
+            String playerName = null;
+            if (scoreData.containsKey("playerName")) {
+                playerName = (String) scoreData.get("playerName");
+            } else if (scoreData.containsKey("nickname")) {
+                playerName = (String) scoreData.get("nickname");
+            }
+
+            Object scoreValue = scoreData.get("score");
+            if (playerName == null || playerName.trim().isEmpty() || scoreValue == null) {
+                LOGGER.warning("Invalid score data received: " + scoreData);
                 return ResponseEntity.badRequest().build();
             }
-            score.setTimestamp(new Date());
-            scores.add(score);
+
+            int score = 0;
+            if (scoreValue instanceof Number) {
+                score = ((Number) scoreValue).intValue();
+            } else if (scoreValue instanceof String) {
+                try {
+                    score = Integer.parseInt((String) scoreValue);
+                } catch (NumberFormatException e) {
+                    LOGGER.warning("Invalid score value: " + scoreValue);
+                    return ResponseEntity.badRequest().build();
+                }
+            }
+
+            if (score < 0) {
+                LOGGER.warning("Negative score received: " + score);
+                return ResponseEntity.badRequest().build();
+            }
+
+            Score newScore = new Score(playerName.trim(), score);
+            newScore.setTimestamp(new Date());
+            scores.add(newScore);
             saveScores();
-            LOGGER.info("Saved score for player: " + score.getPlayerName() + ", score: " + score.getScore());
-            return ResponseEntity.status(HttpStatus.CREATED).body(score);
+            LOGGER.info("Saved score for player: " + playerName + ", score: " + score);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newScore);
         } catch (Exception e) {
             LOGGER.severe("Error saving score: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -1,6 +1,6 @@
 // src/App.jsx
 import { useState, useEffect } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, Navigate } from "react-router-dom";
 import LandingPage from "./components/LandingPage";
 import GameScreen from "./components/GameScreen";
 import LeaderboardScreen from "./components/LeaderboardScreen";
@@ -90,7 +90,13 @@ function App() {
           />
           <Route
             path="/game"
-            element={<GameScreen nickname={nickname} setError={setError} />}
+            element={
+              nickname ? (
+                <GameScreen nickname={nickname} setError={setError} />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
           />
           <Route path="/leaderboard" element={<LeaderboardScreen />} />
           <Route

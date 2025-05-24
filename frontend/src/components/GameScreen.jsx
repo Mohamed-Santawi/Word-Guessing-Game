@@ -19,6 +19,8 @@ function GameScreen({ nickname, setError }) {
   const [gameOver, setGameOver] = useState(false);
   const [won, setWon] = useState(false);
   const [guess, setGuess] = useState("");
+  const [finalScore, setFinalScore] = useState(0);
+  const [isCalculatingScore, setIsCalculatingScore] = useState(false);
 
   useEffect(() => {
     if (!word) {
@@ -27,10 +29,19 @@ function GameScreen({ nickname, setError }) {
       return;
     }
     const timer = setInterval(() => {
-      setTimeTaken((prev) => prev + 1);
+      if (!gameOver) {
+        setTimeTaken((prev) => prev + 1);
+      }
     }, 1000);
     return () => clearInterval(timer);
-  }, [word, navigate, setError]);
+  }, [word, navigate, setError, gameOver]);
+
+  const calculateScore = () => {
+    return Math.max(
+      0,
+      1000 - timeTaken * 10 - incorrectGuesses * 50 - (usedHint ? 100 : 0)
+    );
+  };
 
   const handleGuess = () => {
     if (gameOver) return;
@@ -47,9 +58,11 @@ function GameScreen({ nickname, setError }) {
                 letter === guess.toLowerCase()
             )
         ) {
+          const score = calculateScore();
+          setFinalScore(score);
           setGameOver(true);
           setWon(true);
-          saveScore();
+          saveScore(score);
         }
       } else {
         setIncorrectGuesses((prev) => {
@@ -62,9 +75,11 @@ function GameScreen({ nickname, setError }) {
         });
       }
     } else if (guess.toLowerCase() === word.toLowerCase()) {
+      const score = calculateScore();
+      setFinalScore(score);
       setGameOver(true);
       setWon(true);
-      saveScore();
+      saveScore(score);
     } else {
       setIncorrectGuesses((prev) => {
         const newCount = prev + 1;
@@ -78,26 +93,36 @@ function GameScreen({ nickname, setError }) {
     setGuess("");
   };
 
-  const saveScore = () => {
-    const score = Math.max(
-      0,
-      1000 - timeTaken * 10 - incorrectGuesses * 50 - (usedHint ? 100 : 0)
-    );
+  const saveScore = (score) => {
+    if (!nickname) {
+      setError("Nickname is required to save score.");
+      return;
+    }
     fetch(`${API_URL}/api/scores`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nickname, score }),
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        nickname: nickname.trim(),
+        score: score,
+      }),
     })
-      .then((res) =>
-        res.ok ? res.json() : res.json().then((err) => Promise.reject(err))
-      )
-      .catch((err) =>
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then((err) => Promise.reject(err));
+        }
+        return res.json();
+      })
+      .catch((err) => {
+        console.error("Score save error:", err);
         setError(
           typeof err === "string"
             ? err
             : "Failed to save score. Please try again."
-        )
-      );
+        );
+      });
   };
 
   const displayWord = word
@@ -155,16 +180,8 @@ function GameScreen({ nickname, setError }) {
               </div>
               <div className="modal-body">
                 <p>{won ? "You won!" : "You lost."}</p>
-                <p>
-                  Score:{" "}
-                  {Math.max(
-                    0,
-                    1000 -
-                      timeTaken * 10 -
-                      incorrectGuesses * 50 -
-                      (usedHint ? 100 : 0)
-                  )}
-                </p>
+                <p>The word was: {word}</p>
+                <p>Score: {finalScore}</p>
               </div>
               <div className="modal-footer">
                 <button
