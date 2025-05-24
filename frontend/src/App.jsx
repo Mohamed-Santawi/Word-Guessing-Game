@@ -15,7 +15,7 @@ function App() {
   const [nickname, setNickname] = useState("");
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState("");
-
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   // Fetch categories from API on mount
   useEffect(() => {
     fetch(`${API_URL}/api/words/categories`)
@@ -38,38 +38,64 @@ function App() {
           <button
             className="navbar-toggler"
             type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-controls="navbarNav"
-            aria-expanded="false"
+            aria-expanded={isMenuOpen}
             aria-label="Toggle navigation"
           >
-            <span className="navbar-toggler-icon"></span>
+            {isMenuOpen ? (
+              <span>&#10005;</span> // Unicode X icon
+            ) : (
+              <span className="navbar-toggler-icon"></span>
+            )}
           </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
+          <div
+            className={`collapse navbar-collapse ${isMenuOpen ? "show" : ""}`}
+            id="navbarNav"
+          >
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                <Link className="nav-link" to="/">
+                <Link
+                  className="nav-link"
+                  to="/"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   Home
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/game">
+                <Link
+                  className="nav-link"
+                  to="/game"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   Game
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/leaderboard">
+                <Link
+                  className="nav-link"
+                  to="/leaderboard"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   Leaderboard
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/manage">
+                <Link
+                  className="nav-link"
+                  to="/manage"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   Word Management
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/about">
+                <Link
+                  className="nav-link"
+                  to="/about"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   About
                 </Link>
               </li>
