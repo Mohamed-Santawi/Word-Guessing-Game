@@ -1,5 +1,6 @@
 // Word Management Screen Component
 import { useState, useEffect } from "react";
+import { API_URL } from "../config";
 
 function WordManagementScreen({ setError }) {
   const [words, setWords] = useState([]);
@@ -8,7 +9,7 @@ function WordManagementScreen({ setError }) {
   const [hint, setHint] = useState("");
 
   useEffect(() => {
-    fetch("/api/words")
+    fetch(`${API_URL}/api/words`)
       .then((res) => res.json())
       .then((data) => setWords(data))
       .catch(() => setError("Failed to fetch words."));
@@ -19,7 +20,7 @@ function WordManagementScreen({ setError }) {
       setError("Category and word must contain only letters a-z.");
       return;
     }
-    fetch("/api/words", {
+    fetch(`${API_URL}/api/words`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ category, word, hint }),
@@ -37,7 +38,7 @@ function WordManagementScreen({ setError }) {
   };
 
   const handleDelete = (category, word) => {
-    fetch(`/api/words?category=${category}&word=${word}`, {
+    fetch(`${API_URL}/api/words?category=${category}&word=${word}`, {
       method: "DELETE",
     })
       .then((res) =>

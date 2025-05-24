@@ -1,6 +1,7 @@
 // src/components/LandingPage.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../config";
 
 /**
  * Landing page with game rules, nickname input, and category selector.
@@ -15,7 +16,7 @@ function LandingPage({ categories, setNickname, setError }) {
       setError("Please enter a nickname and select a category.");
       return;
     }
-    fetch(`/api/words/random?category=${selectedCategory}`)
+    fetch(`${API_URL}/api/words/random?category=${selectedCategory}`)
       .then((res) =>
         res.ok ? res.json() : Promise.reject("No words available")
       )

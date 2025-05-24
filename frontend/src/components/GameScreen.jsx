@@ -2,6 +2,7 @@
 // src/components/GameScreen.jsx
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { API_URL } from "../config";
 
 /**
  * Game screen for guessing words with timer and scoring.
@@ -82,7 +83,7 @@ function GameScreen({ nickname, setError }) {
       0,
       1000 - timeTaken * 10 - incorrectGuesses * 50 - (usedHint ? 100 : 0)
     );
-    fetch("/api/scores", {
+    fetch(`${API_URL}/api/scores`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nickname, score }),
