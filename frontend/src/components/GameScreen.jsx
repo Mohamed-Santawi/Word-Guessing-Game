@@ -133,59 +133,80 @@ function GameScreen({ nickname, setError }) {
     .join(" ");
 
   return (
-    <div>
-      <h1>Game Screen</h1>
-      <p>Nickname: {nickname}</p>
-      <p>Word: {displayWord}</p>
-      <p>Incorrect Guesses: {incorrectGuesses}/6</p>
-      <p>Time: {timeTaken} seconds</p>
-      {usedHint && <p>Hint: {hint}</p>}
-      <div className="mb-3">
-        <input
-          type="text"
-          className="form-control"
-          value={guess}
-          onChange={(e) => setGuess(e.target.value)}
-          disabled={gameOver}
-        />
-        <button
-          className="btn btn-primary mt-2"
-          onClick={handleGuess}
-          disabled={gameOver}
-        >
-          Guess
-        </button>
-        <button
-          className="btn btn-secondary mt-2 ms-2"
-          onClick={() => setUsedHint(true)}
-          disabled={usedHint || gameOver}
-        >
-          Show Hint
-        </button>
-        <button
-          className="btn btn-danger mt-2 ms-2"
-          onClick={() => navigate("/")}
-        >
-          Quit
-        </button>
+    <div className="container">
+      <div className="row justify-content-center">
+        <div className="col-12 col-md-8 col-lg-6">
+          <h1 className="text-center mb-4">Game Screen</h1>
+          <div className="card shadow-sm">
+            <div className="card-body">
+              <p className="lead">Nickname: {nickname}</p>
+              <div className="mb-4">
+                <h2 className="text-center display-4 mb-3">{displayWord}</h2>
+              </div>
+              <div className="d-flex justify-content-between mb-3">
+                <p className="mb-0">Incorrect Guesses: {incorrectGuesses}/6</p>
+                <p className="mb-0">Time: {timeTaken} seconds</p>
+              </div>
+              {usedHint && (
+                <div className="alert alert-info mb-3">
+                  <strong>Hint:</strong> {hint}
+                </div>
+              )}
+              <div className="mb-3">
+                <input
+                  type="text"
+                  className="form-control form-control-lg mb-2"
+                  value={guess}
+                  onChange={(e) => setGuess(e.target.value)}
+                  disabled={gameOver}
+                  placeholder="Enter your guess..."
+                />
+                <div className="d-grid gap-2 d-md-flex justify-content-md-center">
+                  <button
+                    className="btn btn-primary btn-lg"
+                    onClick={handleGuess}
+                    disabled={gameOver}
+                  >
+                    Guess
+                  </button>
+                  <button
+                    className="btn btn-secondary btn-lg"
+                    onClick={() => setUsedHint(true)}
+                    disabled={usedHint || gameOver}
+                  >
+                    Show Hint
+                  </button>
+                  <button
+                    className="btn btn-danger btn-lg"
+                    onClick={() => navigate("/")}
+                  >
+                    Quit
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       {gameOver && (
         <div className="modal show d-block" tabIndex="-1">
-          <div className="modal-dialog">
+          <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">
                   {won ? "Congratulations!" : "Game Over"}
                 </h5>
               </div>
-              <div className="modal-body">
-                <p>{won ? "You won!" : "You lost."}</p>
-                <p>The word was: {word}</p>
-                <p>Score: {finalScore}</p>
+              <div className="modal-body text-center">
+                <p className="lead">{won ? "You won!" : "You lost."}</p>
+                <p>
+                  The word was: <strong>{word}</strong>
+                </p>
+                <p className="h3">Score: {finalScore}</p>
               </div>
-              <div className="modal-footer">
+              <div className="modal-footer justify-content-center">
                 <button
-                  className="btn btn-primary"
+                  className="btn btn-primary btn-lg"
                   onClick={() => navigate("/")}
                 >
                   Back to Home

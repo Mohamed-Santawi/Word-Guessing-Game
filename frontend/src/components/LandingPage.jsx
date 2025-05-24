@@ -32,39 +32,59 @@ function LandingPage({ categories, setNickname, setError }) {
   };
 
   return (
-    <div>
-      <h1>Welcome to the Word Guessing Game</h1>
-      <p>
-        Rules: Guess the word by entering letters or the full word. You have 6
-        attempts. Use hints sparingly as they affect your score!
-      </p>
-      <div className="mb-3">
-        <label className="form-label">Nickname</label>
-        <input
-          type="text"
-          className="form-control"
-          value={localNickname}
-          onChange={(e) => setLocalNickname(e.target.value)}
-        />
+    <div className="container">
+      <div className="row justify-content-center">
+        <div className="col-12 col-md-8 col-lg-6">
+          <div className="card shadow-sm">
+            <div className="card-body">
+              <h1 className="text-center mb-4">
+                Welcome to the Word Guessing Game
+              </h1>
+              <div className="alert alert-info mb-4">
+                <h5 className="alert-heading">Rules:</h5>
+                <ul className="mb-0">
+                  <li>Guess the word by entering letters or the full word</li>
+                  <li>You have 6 attempts</li>
+                  <li>Use hints sparingly as they affect your score!</li>
+                </ul>
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Nickname</label>
+                <input
+                  type="text"
+                  className="form-control form-control-lg"
+                  value={localNickname}
+                  onChange={(e) => setLocalNickname(e.target.value)}
+                  placeholder="Enter your nickname..."
+                />
+              </div>
+              <div className="mb-4">
+                <label className="form-label">Category</label>
+                <select
+                  className="form-select form-select-lg"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                  <option value="">Select a category</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="d-grid">
+                <button
+                  className="btn btn-primary btn-lg"
+                  onClick={handleStart}
+                >
+                  Start Game
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="mb-3">
-        <label className="form-label">Category</label>
-        <select
-          className="form-select"
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-        >
-          <option value="">Select a category</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
-      </div>
-      <button className="btn btn-primary" onClick={handleStart}>
-        Start Game
-      </button>
     </div>
   );
 }

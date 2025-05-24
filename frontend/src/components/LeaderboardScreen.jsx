@@ -27,29 +27,37 @@ function LeaderboardScreen() {
   }
 
   return (
-    <div>
-      <h1>Leaderboard</h1>
+    <div className="container">
+      <h1 className="text-center mb-4">Leaderboard</h1>
       {scores.length === 0 ? (
-        <p>No scores available yet.</p>
+        <div className="text-center">
+          <p className="lead">No scores available yet.</p>
+        </div>
       ) : (
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Player</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {scores.map((score, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{score.playerName}</td>
-                <td>{score.score}</td>
+        <div className="table-responsive">
+          <table className="table table-striped table-hover">
+            <thead className="table-dark">
+              <tr>
+                <th scope="col" className="text-center">
+                  Rank
+                </th>
+                <th scope="col">Player</th>
+                <th scope="col" className="text-end">
+                  Score
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {scores.map((score, index) => (
+                <tr key={index}>
+                  <td className="text-center">{index + 1}</td>
+                  <td>{score.playerName}</td>
+                  <td className="text-end">{score.score}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
