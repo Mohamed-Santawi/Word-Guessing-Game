@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "${HEROKU_URL}/api/:path*"
+      "destination": "https://wordgame-app-faf3f0210884.herokuapp.com/api/:path*"
     }
   ],
   "buildCommand": "npm run build",
