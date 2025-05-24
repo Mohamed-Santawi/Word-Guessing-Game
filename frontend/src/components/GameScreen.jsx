@@ -170,7 +170,7 @@ function GameScreen({ nickname, setError }) {
                   className="btn btn-primary"
                   onClick={() => navigate("/")}
                 >
-                  Back to Home
+                  Back 
                 </button>
               </div>
             </div>
