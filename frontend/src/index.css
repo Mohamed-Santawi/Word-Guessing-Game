@@ -238,3 +238,25 @@ body {
   text-align: center;
   margin: 1rem 0;
 }
+
+/* Hangman styling */
+.hangman-container {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto 2rem;
+  padding: 1rem;
+}
+
+.hangman-svg {
+  width: 100%;
+  height: auto;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hangman-svg line,
+.hangman-svg circle {
+  transition: all 0.3s ease;
+}

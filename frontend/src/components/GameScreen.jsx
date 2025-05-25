@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
+import Hangman from "./Hangman";
 
 /**
  * Game screen for guessing words with timer and scoring.
@@ -144,6 +145,8 @@ function GameScreen({ nickname, setError }) {
                   Player: <span className="fw-bold">{nickname}</span>
                 </p>
               </div>
+
+              <Hangman incorrectGuesses={incorrectGuesses} />
 
               <div className="game-stats d-flex justify-content-between mb-4">
                 <div className="timer">
