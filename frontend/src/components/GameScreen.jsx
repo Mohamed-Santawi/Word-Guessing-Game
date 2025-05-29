@@ -13,6 +13,7 @@ function GameScreen({ nickname, setError }) {
   const navigate = useNavigate();
   const [word, setWord] = useState(state?.wordEntry?.word || "");
   const [hint, setHint] = useState(state?.wordEntry?.hint || "");
+  const [category, setCategory] = useState(state?.wordEntry?.category || "");
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [incorrectGuesses, setIncorrectGuesses] = useState(0);
   const [usedHint, setUsedHint] = useState(false);
@@ -22,6 +23,38 @@ function GameScreen({ nickname, setError }) {
   const [guess, setGuess] = useState("");
   const [finalScore, setFinalScore] = useState(0);
   const [isCalculatingScore, setIsCalculatingScore] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    // Fetch available categories
+    fetch(`${API_URL}/api/words/categories`)
+      .then((res) => res.json())
+      .then((data) => setCategories(data))
+      .catch(() => setError("Failed to fetch categories."));
+  }, []);
+
+  const getNewWord = (selectedCategory = category) => {
+    fetch(`${API_URL}/api/words/random?category=${selectedCategory}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.word) {
+          setWord(data.word);
+          setHint(data.hint);
+          setCategory(data.category);
+          setGuessedLetters([]);
+          setIncorrectGuesses(0);
+          setUsedHint(false);
+          setTimeTaken(0);
+          setGameOver(false);
+          setWon(false);
+          setGuess("");
+          setFinalScore(0);
+        } else {
+          setError("No words available in this category.");
+        }
+      })
+      .catch(() => setError("Failed to fetch new word."));
+  };
 
   useEffect(() => {
     if (!word) {
@@ -144,6 +177,20 @@ function GameScreen({ nickname, setError }) {
                 <p className="lead text-center">
                   Player: <span className="fw-bold">{nickname}</span>
                 </p>
+                <div className="category-selector mb-3">
+                  <select
+                    className="form-select"
+                    value={category}
+                    onChange={(e) => getNewWord(e.target.value)}
+                    disabled={!gameOver}
+                  >
+                    {categories.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               <Hangman incorrectGuesses={incorrectGuesses} />
@@ -248,7 +295,14 @@ function GameScreen({ nickname, setError }) {
               </div>
               <div className="modal-footer justify-content-center">
                 <button
-                  className="btn btn-primary btn-lg"
+                  className="btn btn-primary btn-lg me-2"
+                  onClick={() => getNewWord()}
+                >
+                  <i className="fas fa-redo me-2"></i>
+                  Play Again
+                </button>
+                <button
+                  className="btn btn-secondary btn-lg"
                   onClick={() => navigate("/")}
                 >
                   <i className="fas fa-home me-2"></i>

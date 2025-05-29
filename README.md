@@ -1,67 +1,167 @@
-Word Guessing Game
+# Word Guessing Game
 
-Project Overview
+A modern word guessing game that combines elements of Hangman and Wordle, built with React and Spring Boot.
 
-This is a single-page word guessing game combining Hangman and Wordle mechanics, built with React (using Vite) for the frontend and Spring Boot for the backend. Players can guess letters or whole words, select categories, manage words, and view a leaderboard. The app uses Bootstrap for responsive design and Java ObjectStreams for data persistence.
+## Features
 
-Scoring Formula
+- 🎮 Multiple word categories (Animals, Fruits, Football Players)
+- ⏱️ Real-time timer for scoring
+- 💡 Hint system
+- 🏆 Global leaderboard
+- 📝 Word management system
+- 📱 Responsive design using Bootstrap
+- 🔄 Continuous gameplay
+- 🎯 Dynamic category switching
 
-The score is calculated as follows:
+## Technical Stack
 
-Score = max(0, 1000 - (time_taken_in_seconds _ 10) - (incorrectGuesses _ 50) - (usedHint \* 100))
+### Frontend
 
-time_taken_in_seconds: Time from game start to completion (capped at 100 seconds).
+- React
+- React Router for navigation
+- Bootstrap for responsive design
+- Font Awesome for icons
 
-incorrectGuesses: Number of incorrect guesses (max 6).
+### Backend
 
-usedHint: 1 if the hint was used, 0 otherwise.
+- Spring Boot
+- REST API architecture
+- Java ObjectStreams for data persistence
+- Maven for dependency management
 
-Minimum score: 0.
+## Project Structure
 
-Example: Completing in 20 seconds with 2 incorrect guesses and 1 hint:
+```
+word-guessing-game/
+├── frontend/               # React frontend application
+│   ├── src/
+│   │   ├── components/    # React components
+│   │   ├── config/       # Configuration files
+│   │   └── App.jsx       # Main application component
+│   └── package.json      # Frontend dependencies
+│
+└── backend/              # Spring Boot backend application
+    ├── src/
+    │   └── main/
+    │       ├── java/
+    │       │   └── com/
+    │       │       └── example/
+    │       │           └── wordgame/
+    │       │               ├── controller/  # REST controllers
+    │       │               ├── model/       # Data models
+    │       │               └── init/        # Initialization classes
+    │       └── resources/
+    │           └── application.properties
+    └── pom.xml           # Backend dependencies
+```
 
-Score = max(0, 1000 - (20 _ 10) - (2 _ 50) - (1 \* 100)) = 600
+## Setup Instructions
 
-Setup Instructions
+### Prerequisites
 
-Backend:
+- Java 17 or higher
+- Node.js 14 or higher
+- Maven
 
-Run the Spring Boot application (WordGameApplication.java) using IntelliJ or ./mvnw spring-boot:run.
+### Backend Setup
 
-Initialize words.ser by running WordInit.java.
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+2. Build the project:
+   ```bash
+   ./mvnw clean package
+   ```
+3. Run the application:
+   ```bash
+   java -jar target/wordgame-0.0.1-SNAPSHOT.jar
+   ```
 
-The API runs on http://localhost:8080.
+### Frontend Setup
 
-Frontend:
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm start
+   ```
 
-Navigate to the frontend folder.
+## Game Rules
 
-Install dependencies: npm install.
+1. Enter your nickname on the landing page
+2. Select a word category
+3. Guess letters or the entire word
+4. Use hints if needed (affects final score)
+5. Try to guess the word before running out of attempts
 
-Start the Vite dev server: npm run dev.
+## Scoring System
 
-Access the app at http://localhost:5173 (default Vite port).
+The game uses a sophisticated scoring system that takes into account:
 
-Build for production: npm run build.
+- Time taken to solve
+- Number of incorrect guesses
+- Hint usage
 
-Dependencies:
+### Scoring Formula
 
-Backend: Java 17, Spring Boot, Maven.
+```
+Final Score = 1000 - (Time Taken × 10) - (Incorrect Guesses × 50) - (Hint Used × 100)
+```
 
-Frontend: Node.js, Vite, React 18, Bootstrap 5, React Router 6.
+- Base score: 1000 points
+- Time penalty: -10 points per second
+- Incorrect guess penalty: -50 points per wrong guess
+- Hint penalty: -100 points if hint is used
 
-Error Handling
+## Error Handling
 
-Server unavailable: Modal blocks game start.
+The application implements comprehensive error handling:
 
-No words/empty category: Modal redirects to landing page.
+- Server unavailable before game start → Game start blocked
+- Server unavailable after game end → Score cannot be saved
+- No words available → Game start blocked
+- Invalid input → Clear error messages with Bootstrap modals
 
-Score save failure: Modal informs user without crashing.
+## Word Management
 
-Notes
+The word management system allows:
 
-The .idea folder is included for IntelliJ run configurations.
+- Adding new categories
+- Adding/editing/deleting words
+- Validation for letters a-z only
+- Case-insensitive word handling
+- Prevention of duplicate words
 
-Check console and network tabs for debugging.
+## API Endpoints
 
-The UI is responsive using Bootstrap’s grid system.
+### Words
+
+- `GET /api/words/categories` - Get all categories
+- `GET /api/words/random?category={category}` - Get random word from category
+- `GET /api/words` - Get all words
+- `POST /api/words` - Add new word
+- `DELETE /api/words?category={category}&word={word}` - Delete word
+
+### Scores
+
+- `GET /api/scores` - Get leaderboard
+- `POST /api/scores` - Save new score
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
