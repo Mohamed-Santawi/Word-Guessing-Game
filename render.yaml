@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: wordgame-backend
+    name: word-guessing-game-backend
     env: java
     region: oregon
     plan: free
